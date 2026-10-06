@@ -28,7 +28,9 @@ approved by the creators or publishers of WalkScape.
   These endpoints are unofficial and the game's owners may change or restrict them at any time.
 - This project is free and has no ads, tracking or paid features. It must stay that way.
 - If the owners of WalkScape ask for changes or for this project to be taken down, it will be done promptly.
-  Please open an issue or contact the repository owner.
+  Please use the **"Request from WalkScape's owners"** issue form on this repository, or contact the repository owner through their GitHub profile.
+
+**Not part of the MIT license:** "WalkScape" and all WalkScape names, logos, artwork and game content are the property of Not a Cult Oy and are not licensed by `LICENSE`.
 
 The source code is licensed under the MIT License (see `LICENSE`). The MIT license covers the code and the
 original backgrounds only. It grants no rights in the WalkScape name, logo or game content.

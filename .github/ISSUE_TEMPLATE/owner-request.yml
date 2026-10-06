@@ -1,0 +1,20 @@
+name: Request from WalkScape's owners
+description: For Not a Cult Oy / the WalkScape team: ask for changes or removal. We will act promptly.
+title: "[Owner request] "
+labels: ["owner-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is an unofficial fan project. If you represent WalkScape and want anything changed or removed
+        (name, wording, credit, API usage, or the whole project), tell us here and it will be done promptly.
+  - type: textarea
+    id: request
+    attributes:
+      label: What would you like changed or removed?
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: How should we reach you? (optional)
