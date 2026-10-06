@@ -41,7 +41,16 @@ Three sizes, so it fits wherever you want it:
 
 ## Install in a minute
 
-You need a Mac running **macOS 14 (Sonoma) or newer**. No coding, no developer tools.
+You need a Mac running **macOS 14 (Sonoma) or newer**. No coding, no developer tools. Pick one way:
+
+### Option A: Download (no Terminal)
+
+1. **[⬇ Download for Mac](https://github.com/jaydenbarnescs-tech/walkscape-desktop-widget/releases/latest/download/WalkScape-Widget.zip)**, open the zip (double-click), then double-click **WalkScape Widget**.
+2. **Approve it once.** macOS says it can't verify the app because this free fan project isn't signed with a paid Apple developer account. Click **Done**, open **System Settings → Privacy & Security**, scroll down, click **Open Anyway** and enter your Mac password. You only do this once.
+3. The app moves itself into place and opens. **Type your character name and click it** (or paste your [walkstats.app](https://walkstats.app) link).
+4. Right-click an empty spot on the desktop → **Edit Widgets** → search **WalkScape** → drag a size onto the desktop → **Done**.
+
+### Option B: One line in Terminal (skips the approval step)
 
 **1. Open Terminal.** Press <kbd>⌘</kbd> + <kbd>Space</kbd>, type `Terminal`, press <kbd>Return</kbd>. (It is a built-in Mac app.)
 

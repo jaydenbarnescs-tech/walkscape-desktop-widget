@@ -43,6 +43,10 @@ h2{font:700 clamp(22px,3.5vw,30px)/1.2 Silkscreen,monospace;margin-bottom:10px}
 .step{display:grid;grid-template-columns:48px 1fr;gap:16px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
 .step::before{counter-increment:s;content:counter(s);font:700 22px/48px Silkscreen,monospace;text-align:center;color:var(--bg);background:var(--gold);border-radius:10px;height:48px}
 .step h3{font-size:18px;margin-bottom:4px}
+h3.opt{font:700 15px Silkscreen,monospace;color:var(--gold);margin:30px 0 14px}
+h3.opt:first-of-type{margin-top:0}
+a.dl{display:inline-block;margin:2px 0 8px;padding:10px 16px;border-radius:10px;background:var(--gold);color:var(--bg);font:700 13px Silkscreen,monospace;text-decoration:none}
+a.dl:hover{filter:brightness(1.08)}
 .step p{color:var(--muted)}
 kbd{font:500 13px "JetBrains Mono",monospace;background:#0a0f15;border:1px solid var(--line);border-bottom-width:2px;border-radius:6px;padding:1px 7px;color:var(--text)}
 .cmd{display:flex;gap:10px;align-items:stretch;margin-top:12px}
@@ -93,7 +97,27 @@ footer a{color:var(--gold)}
 <section id="install">
   <div class="wrap">
     <h2>Install in a minute</h2>
-    <p class="sub">No coding and no developer tools. You need a Mac running macOS 14 (Sonoma) or newer. Nothing asks for your WalkScape password.</p>
+    <p class="sub">No coding and no developer tools. You need a Mac running macOS 14 (Sonoma) or newer. Nothing asks for your WalkScape password. Pick whichever way you like better.</p>
+    <h3 class="opt">Option A &middot; Download (no Terminal)</h3>
+    <div class="steps">
+      <div class="step"><div>
+        <h3>Download and open it</h3>
+        <p><a class="dl" href="https://github.com/jaydenbarnescs-tech/walkscape-desktop-widget/releases/latest/download/WalkScape-Widget.zip">&#11015; Download for Mac</a><br>Open the downloaded zip (double-click) and then double-click <b>WalkScape Widget</b>.</p>
+      </div></div>
+      <div class="step"><div>
+        <h3>Approve it once</h3>
+        <p>macOS will say it can't verify the app, because this free fan project isn't signed with a paid Apple developer account. Click <b>Done</b>, open <b>System Settings &rarr; Privacy &amp; Security</b>, scroll down and click <b>Open Anyway</b>, then enter your Mac password. You only do this once.</p>
+      </div></div>
+      <div class="step"><div>
+        <h3>Choose your character</h3>
+        <p>The app moves itself into place and opens. Type your character name and click it, or paste your <a href="https://walkstats.app">walkstats.app</a> link.</p>
+      </div></div>
+      <div class="step"><div>
+        <h3>Put it on your desktop</h3>
+        <p>Right-click an empty spot on the desktop &rarr; <b>Edit Widgets</b> &rarr; search <b>WalkScape</b> &rarr; drag a size onto the desktop &rarr; <b>Done</b>.</p>
+      </div></div>
+    </div>
+    <h3 class="opt">Option B &middot; One line in Terminal (skips the approval step)</h3>
     <div class="steps">
       <div class="step"><div>
         <h3>Open Terminal</h3>

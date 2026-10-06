@@ -142,6 +142,7 @@ struct SetupView: View {
 
 @main
 struct WalkScapeWidgetApp: App {
+    init() { if SelfInstall.run() { exit(0) } }
     var body: some Scene {
         WindowGroup { SetupView() }.windowResizability(.contentSize)
     }
