@@ -157,8 +157,8 @@ struct WidgetView: View {
         VStack(alignment: .leading, spacing: 0) {
             Text(c.name).font(px(12)).lineLimit(1)
             Spacer(minLength: 0)
-            Caption(snap.tracking ? "TODAY" : "STEPS")
-            Text(fmt(snap.tracking ? snap.today : c.totalSteps)).font(px(30)).foregroundStyle(gold)
+            Caption("TODAY")
+            Text(fmt(snap.today)).font(px(30)).foregroundStyle(gold)
                 .minimumScaleFactor(0.5).lineLimit(1)
             Text("\(fmt(c.totalSteps)) total").font(px(9, .bold)).foregroundStyle(.white.opacity(0.85))
                 .minimumScaleFactor(0.7).lineLimit(1)
@@ -178,7 +178,7 @@ struct WidgetView: View {
                 Text(fmt(c.totalSteps)).font(px(25)).minimumScaleFactor(0.5).lineLimit(1)
                 HStack(spacing: 6) {
                     Text("TODAY").font(px(9, .bold)).foregroundStyle(.white.opacity(0.65))
-                    Text(snap.tracking ? fmt(snap.today) : "—").font(px(13)).foregroundStyle(gold)
+                    Text(fmt(snap.today)).font(px(13)).foregroundStyle(gold)
                 }
                 Spacer(minLength: 0)
                 SyncBadge(c: c)
@@ -207,7 +207,7 @@ struct WidgetView: View {
                 Spacer()
                 VStack(alignment: .trailing, spacing: 1) {
                     Caption("TODAY")
-                    Text(snap.tracking ? fmt(snap.today) : "—").font(px(24)).foregroundStyle(gold)
+                    Text(fmt(snap.today)).font(px(24)).foregroundStyle(gold)
                 }
             }
             HStack(spacing: 7) {

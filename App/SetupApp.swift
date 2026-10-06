@@ -11,7 +11,10 @@ final class Model: ObservableObject {
     @Published var status = ""
     @Published var directory: [WS.DirectoryEntry] = WS.cachedDirectory() ?? []
 
-    init() { Task { await refreshCurrent() } }
+    init() {
+        WidgetCenter.shared.reloadAllTimelines()
+        Task { await refreshCurrent() }
+    }
 
     func refreshCurrent() async {
         guard let cfg = config else { current = nil; return }

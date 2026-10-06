@@ -11,6 +11,10 @@ Pick your character once, drag the widget onto the desktop, done.
 
 > **Unofficial fan project.** Not affiliated with, endorsed by, or sponsored by WalkScape or its creators. No WalkScape assets are included; all artwork in this repo is original. See [NOTICE.md](NOTICE.md).
 
+![Backgrounds: meadow, forest, coast, mountain, desert](docs/backgrounds.jpg)
+
+The five backgrounds are picked from your character's location (or choose one in the app).
+
 ## Install
 
 Requires macOS 14 or newer and the Xcode Command Line Tools (`xcode-select --install`). Full Xcode is not needed.
