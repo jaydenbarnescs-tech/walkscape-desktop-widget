@@ -23,6 +23,14 @@ enum History {
         return (try? JSONDecoder().decode([String: Int].self, from: data)) ?? [:]
     }
 
+    /// Optional corrections.json written by the setup app ("Calibrate today"): the in-game count for a day
+    /// at a known lifetime total. Today's number is then that count plus whatever has been added since.
+    private struct Correction: Codable { var date: String; var steps: Int; var atTotal: Int }
+    private static func correction() -> Correction? {
+        guard let data = try? Data(contentsOf: Config.dir.appendingPathComponent("corrections.json")) else { return nil }
+        return try? JSONDecoder().decode(Correction.self, from: data)
+    }
+
     static func record(id: String, total: Int, now: Date = Date()) -> Result {
         let d = UserDefaults.standard
         var days = (d.dictionary(forKey: key) as? [String: [Int]]) ?? [:]
@@ -44,6 +52,7 @@ enum History {
             let base = i > 0 ? days[ordered[i - 1]]![1] : days[k]![0]
             delta[k] = max(0, days[k]![1] - base)
         }
+        if let c = correction(), c.date == todayKey { delta[todayKey] = c.steps + max(0, total - c.atTotal) }
         let seeded = seed()
         let cal = Calendar.current
         let wd = DateFormatter(); wd.dateFormat = "EEEEE"

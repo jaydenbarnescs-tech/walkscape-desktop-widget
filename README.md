@@ -95,6 +95,12 @@ The widget shows what WalkScape's servers know, and the game only uploads your p
 </details>
 
 <details>
+<summary><b>The daily steps don't match the game's Daily steps chart. Why?</b></summary>
+
+The game's chart comes straight from your phone. The widget can only see the lifetime total that WalkScape publishes, and that total only changes **when the app syncs**. Steps walked while the app is closed show up later in one lump, on the day of the sync, so a day can look too low and the next one too high. Over time the totals always agree; individual days may not. If today looks wrong, open the setup app and use **Today's steps look off?** to type the number from the game's Stats page.
+</details>
+
+<details>
 <summary><b>Why does "Today" start at zero?</b></summary>
 
 WalkScape only reports lifetime steps. The widget keeps its own small daily log, so today's count and the 7-day chart begin when you install it and fill in as you walk. Days from before you installed show a dash.

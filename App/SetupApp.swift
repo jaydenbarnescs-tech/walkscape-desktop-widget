@@ -52,6 +52,18 @@ final class Model: ObservableObject {
         WidgetCenter.shared.reloadAllTimelines()
     }
 
+    /// Lets the user fix "today" using the number on the game's Stats page.
+    func calibrate(todaySteps: Int) async {
+        guard let cfg = config, let c = await WS.fetchCharacter(id: cfg.characterId) else { status = "Couldn't reach WalkScape."; return }
+        let f = DateFormatter(); f.locale = Locale(identifier: "en_US_POSIX"); f.dateFormat = "yyyy-MM-dd"
+        let corr = ["date": f.string(from: Date()), "steps": todaySteps, "atTotal": c.totalSteps] as [String: Any]
+        guard let data = try? JSONSerialization.data(withJSONObject: corr) else { return }
+        try? FileManager.default.createDirectory(at: Config.dir, withIntermediateDirectories: true)
+        try? data.write(to: Config.dir.appendingPathComponent("corrections.json"), options: .atomic)
+        WidgetCenter.shared.reloadAllTimelines()
+        status = "Today set to \(fmt(todaySteps)). The widget will update shortly."
+    }
+
     func setBackground(_ b: String) {
         guard var cfg = config else { return }
         cfg.background = b
@@ -67,6 +79,7 @@ final class Model: ObservableObject {
 
 struct SetupView: View {
     @StateObject var m = Model()
+    @State private var calibration = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -123,6 +136,18 @@ struct SetupView: View {
             }
 
             if m.config != nil {
+                GroupBox("Today's steps look off?") {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("The widget only learns your steps when the game syncs, so a day can be off. Type today's number from the game's Stats page (Daily steps) to fix it.")
+                            .font(.callout).foregroundStyle(.secondary)
+                        HStack {
+                            TextField("Today's steps in the game", text: $calibration).textFieldStyle(.roundedBorder)
+                            Button("Set") {
+                                if let n = Int(calibration.filter(\.isNumber)) { Task { await m.calibrate(todaySteps: n); calibration = "" } }
+                            }
+                        }
+                    }.padding(4)
+                }
                 GroupBox("Add it to your desktop") {
                     Text("Right-click the desktop → Edit Widgets → search “WalkScape” → drag a size onto the desktop.")
                         .font(.callout).frame(maxWidth: .infinity, alignment: .leading).padding(4)
@@ -136,7 +161,7 @@ struct SetupView: View {
             }.font(.caption).foregroundStyle(.secondary)
         }
         .padding(24)
-        .frame(width: 480, height: 560)
+        .frame(width: 480, height: 640)
     }
 }
 
