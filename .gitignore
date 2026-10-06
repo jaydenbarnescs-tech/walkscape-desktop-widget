@@ -1,0 +1,5 @@
+build/
+.DS_Store
+art/raw-*.png
+art/codex-*.log
+art/gen.out
