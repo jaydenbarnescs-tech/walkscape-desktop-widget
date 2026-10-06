@@ -1,0 +1,56 @@
+name: Release
+
+# Builds the Mac download and publishes it as the latest release, which is what the
+# "Download for Mac" button and get.sh point at.
+#
+# Two ways to run it:
+#   1. On GitHub: Actions tab -> Release -> "Run workflow" -> type a version like 1.2.0   (no coding)
+#   2. Push a tag:  git tag v1.2.0 && git push origin v1.2.0
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number, for example 1.2.0"
+        required: true
+      notes:
+        description: "What changed (shown on the release page)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Work out the version
+        id: v
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then RAW="${{ github.event.inputs.version }}"; else RAW="${GITHUB_REF_NAME}"; fi
+          VERSION="${RAW#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build the universal app and zip it
+        env:
+          VERSION: ${{ steps.v.outputs.version }}
+          BUILD_NUMBER: ${{ github.run_number }}
+        run: ./package.sh
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.v.outputs.tag }}
+          NOTES: ${{ github.event.inputs.notes }}
+        run: |
+          BODY="${NOTES:-Automatic build. Unofficial fan project. Install steps: https://github.com/${GITHUB_REPOSITORY}#install-in-a-minute}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/WalkScape-Widget.zip --clobber
+          else
+            gh release create "$TAG" dist/WalkScape-Widget.zip --target "${GITHUB_SHA}" --title "Widget for WalkScape ${TAG#v}" --notes "$BODY" --latest
+          fi

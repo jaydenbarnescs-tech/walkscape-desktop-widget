@@ -31,6 +31,11 @@ rm -rf build/tmp
 
 sed "s|@PREFIX@|$PREFIX|g" Info-app.plist > "$OUT/Contents/Info.plist"
 sed "s|@PREFIX@|$PREFIX|g" Info-widget.plist > "$APPX/Contents/Info.plist"
+# Release builds stamp the version (VERSION=1.2.0, BUILD_NUMBER=7). Defaults come from the plists.
+for P in "$OUT/Contents/Info.plist" "$APPX/Contents/Info.plist"; do
+  [ -n "${VERSION:-}" ] && /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" "$P"
+  [ -n "${BUILD_NUMBER:-}" ] && /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$P"
+done
 cp Resources/bg-*.jpg "$APPX/Contents/Resources/" 2>/dev/null || echo "  (no background images found, using gradient)"
 [ -f Resources/AppIcon.icns ] && cp Resources/AppIcon.icns "$OUT/Contents/Resources/"
 

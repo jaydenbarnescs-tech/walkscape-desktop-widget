@@ -1,0 +1,22 @@
+name: Build check
+
+# Makes sure the project still compiles on every change.
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["docs/**", "**.md"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build (universal)
+        run: UNIVERSAL=1 ./build.sh
+      - name: Check the widget and both architectures are present
+        run: |
+          lipo -archs "build/WalkScape Widget.app/Contents/MacOS/WalkScapeWidget"
+          lipo -archs "build/WalkScape Widget.app/Contents/PlugIns/WalkScapeSteps.appex/Contents/MacOS/WalkScapeSteps"
+          ls "build/WalkScape Widget.app/Contents/PlugIns/WalkScapeSteps.appex/Contents/Resources"
+          codesign --verify --deep --strict "build/WalkScape Widget.app"
