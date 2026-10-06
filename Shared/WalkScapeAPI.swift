@@ -209,6 +209,7 @@ enum Biome {
         guard let uid else { return "meadow" }
         let parts = uid.split(separator: "-").map(String.init)
         let slug = (parts.count > 2 ? parts[1] : uid).lowercased()
+        if let b = table[slug] { return b }
         func has(_ words: [String]) -> Bool { words.contains { slug.contains($0) } }
         if has(["port", "harbor", "harbour", "bay", "coast", "dock", "isle", "island", "sea", "reef", "shore"]) { return "coast" }
         if has(["frost", "snow", "ice", "glacier", "mountain", "peak", "summit"]) { return "mountain" }
