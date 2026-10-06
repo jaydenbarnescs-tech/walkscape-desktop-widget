@@ -23,8 +23,11 @@
 
 | | |
 |---|---|
-| 👣 | Total steps, **today's steps** and a 7-day chart |
-| ⭐ | Level, total XP, achievement points and your top skills |
+| 🧑 | Your **character portrait** and name |
+| 👣 | Total steps, **today's steps** and a 7-day chart with a number for every day |
+| ⭐ | **Character level** (from your steps, with steps to the next level) and total skill level |
+| 🛠️ | **Skill levels with XP to the next level** |
+| 📍 | Where you are and what you're doing (from the same data the official map uses) |
 | 🖼️ | Pixel-art scenery that matches where your character is (meadow, forest, coast, mountain, desert), or pick one |
 | 🟢 | A **LIVE** badge when the game synced in the last 3 minutes, otherwise how long ago it did |
 | 🔒 | No password, no account linking, no tracking, no ads |
@@ -94,7 +97,7 @@ The widget shows what WalkScape's servers know, and the game only uploads your p
 <details>
 <summary><b>Why does "Today" start at zero?</b></summary>
 
-WalkScape only reports lifetime steps. The widget keeps its own small daily log, so today's count and the 7-day chart begin when you install it and fill in as you walk.
+WalkScape only reports lifetime steps. The widget keeps its own small daily log, so today's count and the 7-day chart begin when you install it and fill in as you walk. Days from before you installed show a dash.
 </details>
 
 <details>

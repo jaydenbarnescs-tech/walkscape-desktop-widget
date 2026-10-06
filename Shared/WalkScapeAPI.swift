@@ -15,6 +15,7 @@ enum WS {
         var skills: [(name: String, xp: Int)]
         var updatedAt: Date?
         var locationUID: String?
+        var currentActivity: String?
     }
 
     struct DirectoryEntry: Codable {
@@ -41,11 +42,20 @@ enum WS {
     }
 
     static func fetchCharacter(id: String) async -> Character? {
-        guard let enc = id.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
-              let url = URL(string: "\(base)/portal/shared/characters/\(enc)"),
+        guard let enc = id.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else { return nil }
+        // The batch endpoint also reports current_activity (the single-character route leaves it empty).
+        if let url = URL(string: "\(base)/portal/shared/characters?character_ids=\(enc)"),
+           let data = await get(url),
+           let arr = (try? JSONSerialization.jsonObject(with: data)) as? [[String: Any]],
+           let o = arr.first, let c = parse(o, id: id) { return c }
+        guard let url = URL(string: "\(base)/portal/shared/characters/\(enc)"),
               let data = await get(url),
-              let o = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any],
-              let name = o["character_name"] as? String else { return nil }
+              let o = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else { return nil }
+        return parse(o, id: id)
+    }
+
+    private static func parse(_ o: [String: Any], id: String) -> Character? {
+        guard let name = o["character_name"] as? String else { return nil }
         let stats = (o["statistics"] as? [String: Any]) ?? [:]
         let skip: Set<String> = ["total_xp", "total_level", "total_steps", "achievement_points", "character_id"]
         let skills = stats.compactMap { k, v -> (name: String, xp: Int)? in
@@ -60,7 +70,60 @@ enum WS {
             achievementPoints: (stats["achievement_points"] as? Int) ?? 0,
             skills: skills,
             updatedAt: (o["updated_at"] as? String).flatMap(iso),
-            locationUID: o["location_uid"] as? String)
+            locationUID: o["location_uid"] as? String,
+            currentActivity: o["current_activity"] as? String)
+    }
+
+    /// The character's profile picture (PNG), from the same public portal.
+    static func fetchPortrait(id: String) async -> Data? {
+        guard let enc = id.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
+              let url = URL(string: "\(base)/portal/shared/characters/\(enc)/pfp"),
+              let data = await get(url), data.starts(with: [0x89, 0x50, 0x4E, 0x47]) else { return nil }
+        return data
+    }
+
+    // MARK: names for activities and places (same public data files the official map uses)
+
+    struct GameNames {
+        var activities: [String: String] = [:]
+        var locations: [String: String] = [:]
+    }
+
+    /// Reads map.walkscape.app's data files (cached for 6 hours in UserDefaults).
+    static func gameNames() async -> GameNames {
+        let d = UserDefaults.standard
+        if let t = d.object(forKey: "names.time") as? Date, Date().timeIntervalSince(t) < 6 * 3600,
+           let a = d.dictionary(forKey: "names.activities") as? [String: String],
+           let l = d.dictionary(forKey: "names.locations") as? [String: String], !a.isEmpty {
+            return GameNames(activities: a, locations: l)
+        }
+        var out = GameNames()
+        guard let htmlURL = URL(string: "https://map.walkscape.app/"), let html = await get(htmlURL),
+              let text = String(data: html, encoding: .utf8),
+              let re = try? NSRegularExpression(pattern: "BUILD_HASH\\s*=\\s*['\"]([A-Za-z0-9]+)['\"]"),
+              let m = re.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+              let r = Range(m.range(at: 1), in: text) else {
+            return GameNames(activities: (d.dictionary(forKey: "names.activities") as? [String: String]) ?? [:],
+                             locations: (d.dictionary(forKey: "names.locations") as? [String: String]) ?? [:])
+        }
+        let hash = String(text[r])
+        if let u = URL(string: "https://map.walkscape.app/data/activities-\(hash).json"), let data = await get(u),
+           let arr = (try? JSONSerialization.jsonObject(with: data)) as? [[String: Any]] {
+            for a in arr { if let id = a["id"] as? String, let n = a["name"] as? String { out.activities[id] = n } }
+        }
+        if let u = URL(string: "https://map.walkscape.app/data/locations-\(hash).json"), let data = await get(u),
+           let cats = (try? JSONSerialization.jsonObject(with: data)) as? [[String: Any]] {
+            for c in cats {
+                for mk in (c["markers"] as? [[String: Any]]) ?? [] {
+                    if let id = mk["id"] as? String, let n = mk["name"] as? String { out.locations[id] = n }
+                }
+            }
+        }
+        if !out.activities.isEmpty {
+            d.set(out.activities, forKey: "names.activities"); d.set(out.locations, forKey: "names.locations")
+            d.set(Date(), forKey: "names.time")
+        }
+        return out
     }
 
     // MARK: identifiers
