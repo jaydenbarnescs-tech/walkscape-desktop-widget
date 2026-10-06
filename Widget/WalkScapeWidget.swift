@@ -12,6 +12,23 @@ struct Snapshot {
     var biome = "meadow"
 }
 
+
+extension Snapshot {
+    /// Sample data for the widget gallery and screenshots.
+    static var demo: Snapshot {
+        var s = Snapshot()
+        s.config = Config(characterId: "demo", characterName: "Adventurer")
+        s.character = WS.Character(id: "demo", name: "Adventurer", totalSteps: 1_234_567, totalLevel: 210,
+                                   totalXP: 3_400_000, achievementPoints: 40,
+                                   skills: [("foraging", 900_000), ("mining", 500_000), ("fishing", 300_000)],
+                                   updatedAt: Date(), locationUID: nil)
+        s.today = 8_412
+        s.tracking = true
+        s.series = ["M", "T", "W", "T", "F", "S", "S"].enumerated().map { ($1, [4000, 9000, 6500, 12000, 3000, 15000, 8412][$0]) }
+        return s
+    }
+}
+
 struct Entry: TimelineEntry {
     let date: Date
     let snap: Snapshot
@@ -30,17 +47,7 @@ func loadSnapshot() async -> Snapshot {
 }
 
 struct Provider: TimelineProvider {
-    func placeholder(in context: Context) -> Entry {
-        var s = Snapshot()
-        s.config = Config(characterId: "demo", characterName: "Adventurer")
-        s.character = WS.Character(id: "demo", name: "Adventurer", totalSteps: 1_234_567, totalLevel: 210,
-                                   totalXP: 3_400_000, achievementPoints: 40,
-                                   skills: [("foraging", 900_000), ("mining", 500_000), ("fishing", 300_000)],
-                                   updatedAt: Date(), locationUID: nil)
-        s.today = 8_412
-        s.series = ["M", "T", "W", "T", "F", "S", "S"].enumerated().map { ($1, [4000, 9000, 6500, 12000, 3000, 15000, 8412][$0]) }
-        return Entry(date: Date(), snap: s)
-    }
+    func placeholder(in context: Context) -> Entry { Entry(date: Date(), snap: .demo) }
     func getSnapshot(in context: Context, completion: @escaping (Entry) -> Void) {
         if context.isPreview { completion(placeholder(in: context)); return }
         Task { completion(Entry(date: Date(), snap: await loadSnapshot())) }
@@ -235,6 +242,9 @@ struct WidgetView: View {
                     }
                 }
             }
+            if let t = c.updatedAt, Date().timeIntervalSince(t) > 600 {
+                Text("Open WalkScape on your phone to sync").font(px(9, .bold)).foregroundStyle(.white.opacity(0.7))
+            }
             Spacer(minLength: 0)
         }
     }
@@ -253,7 +263,7 @@ struct WalkScapeStepsWidget: Widget {
         StaticConfiguration(kind: "WalkScapeSteps", provider: Provider()) { entry in
             WidgetView(entry: entry)
         }
-        .configurationDisplayName("WalkScape Steps")
+        .configurationDisplayName("Steps Widget for WalkScape")
         .description("Your WalkScape steps and stats, right on the desktop.")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }

@@ -1,4 +1,18 @@
-# Notice: unofficial fan project
+# Credits and notice: unofficial fan project
+
+## Credits
+
+**WalkScape** is created and published by **Not a Cult Oy** (Finland). WalkScape, its name, logo, characters,
+game world, items, locations, names and all related game content are © Not a Cult Oy. All rights reserved.
+This project exists because of their game, and every number it shows comes from their service.
+
+- Play and support the game: <https://walkscape.app>
+- Official press kit and contact: <https://walkscape.app/presskit> · contact@walkscape.app
+- Official community wiki: <https://wiki.walkscape.app>
+- Community tools that inspired this one: [WalkStats](https://walkstats.app) and the other projects in the
+  [Walkscape-Index](https://walkscape-index.github.io/)
+- Background art was generated with OpenAI's image generation (via Codex) from original prompts (`art/gen.sh`).
+  The widget is written in Swift with Apple's WidgetKit and SwiftUI.
 
 **WalkScape Widget is an unofficial, non-commercial fan project.** It is not made, endorsed, sponsored or
 approved by the creators or publishers of WalkScape.

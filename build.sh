@@ -13,14 +13,21 @@ APPX="$OUT/Contents/PlugIns/WalkScapeSteps.appex"
 rm -rf build
 mkdir -p "$OUT/Contents/MacOS" "$OUT/Contents/Resources" "$APPX/Contents/MacOS" "$APPX/Contents/Resources"
 
-echo "• compiling widget"
-swiftc -O -parse-as-library -application-extension -target "$ARCH-apple-macos14.0" \
-  Shared/*.swift Widget/*.swift -o "$APPX/Contents/MacOS/WalkScapeSteps" \
-  -Xlinker -e -Xlinker _NSExtensionMain
-
-echo "• compiling setup app"
-swiftc -O -parse-as-library -target "$ARCH-apple-macos14.0" \
-  Shared/*.swift App/*.swift -o "$OUT/Contents/MacOS/WalkScapeWidget"
+# UNIVERSAL=1 builds for Apple silicon and Intel (used for releases); default is this Mac only.
+ARCHS=("$ARCH"); [ "${UNIVERSAL:-0}" = "1" ] && ARCHS=(arm64 x86_64)
+mkdir -p build/tmp
+for A in $ARCHS; do
+  echo "• compiling widget ($A)"
+  swiftc -O -parse-as-library -application-extension -target "$A-apple-macos14.0" \
+    Shared/*.swift Widget/*.swift -o "build/tmp/widget-$A" \
+    -Xlinker -e -Xlinker _NSExtensionMain
+  echo "• compiling setup app ($A)"
+  swiftc -O -parse-as-library -target "$A-apple-macos14.0" \
+    Shared/*.swift App/*.swift -o "build/tmp/app-$A"
+done
+lipo -create build/tmp/widget-* -output "$APPX/Contents/MacOS/WalkScapeSteps"
+lipo -create build/tmp/app-* -output "$OUT/Contents/MacOS/WalkScapeWidget"
+rm -rf build/tmp
 
 sed "s|@PREFIX@|$PREFIX|g" Info-app.plist > "$OUT/Contents/Info.plist"
 sed "s|@PREFIX@|$PREFIX|g" Info-widget.plist > "$APPX/Contents/Info.plist"

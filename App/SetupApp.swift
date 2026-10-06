@@ -129,8 +129,11 @@ struct SetupView: View {
                 }
             }
             Spacer(minLength: 0)
-            Text("No password needed: WalkScape character stats are public. Unofficial fan project, not affiliated with WalkScape.")
-                .font(.caption).foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("No password needed: WalkScape character stats are public.")
+                Text("WalkScape © Not a Cult Oy. This is an unofficial fan project, not affiliated with or endorsed by WalkScape.")
+                Link("Play WalkScape: walkscape.app", destination: URL(string: "https://walkscape.app")!)
+            }.font(.caption).foregroundStyle(.secondary)
         }
         .padding(24)
         .frame(width: 480, height: 560)

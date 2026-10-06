@@ -4,7 +4,7 @@
 <key>CFBundleExecutable</key><string>WalkScapeSteps</string>
 <key>CFBundleIdentifier</key><string>@PREFIX@.steps</string>
 <key>CFBundleName</key><string>WalkScapeSteps</string>
-<key>CFBundleDisplayName</key><string>WalkScape Widget</string>
+<key>CFBundleDisplayName</key><string>Widget for WalkScape</string>
 <key>CFBundlePackageType</key><string>XPC!</string>
 <key>CFBundleShortVersionString</key><string>1.0.0</string>
 <key>CFBundleVersion</key><string>1</string>
